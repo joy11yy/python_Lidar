@@ -1,6 +1,6 @@
 import numpy as np
 
-from Match_GEDI_Land30 import match_gedi_to_landcover
+from Match_GEDI_Land30 import match_gedi_to_landcover,match_gedi_to_landcover_multi
 from ReadData import ReadGEDI_L1B
 from Save_Match_Data import save_matched_data
 from waveform_read import print_data_summary, draw_wave
@@ -16,7 +16,7 @@ plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']  # 用来正常显�
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 if __name__ == "__main__":
     # 直接读取筛选后的文件
-    gedi_filtered_file = r"D:\研究生\SanFrancisco\GEDI_filtered_2025032182236_O34785_02_T02894_02_006_02_V002.h5"
+    gedi_filtered_file = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_2025032182236_O34785_02_T02894_02_006_02_V002.h5"
 
     if os.path.exists(gedi_filtered_file):
         print("开始读取筛选后的GEDI数据...")
@@ -167,18 +167,36 @@ if __name__ == "__main__":
 
 
     #匹配数据
-    landcover_tif=r"D:\研究生\SanFrancisco\GLC_FCS30_2020_W125N40.tif"
-    output_file=r"D:\研究生\SanFrancisco\GEDI_Matched_Compact_SF_Land30.h5"
-    GEDIdata_match=match_gedi_to_landcover(gedi_filtered_file,landcover_tif)
+    # landcover_tif=r"D:\研究生\SanFrancisco\GLC_FCS30_2020_W125N40.tif"
+    # output_file=r"D:\研究生\SanFrancisco\GEDI_Matched_Compact_SF_Land30.h5"
+    # GEDIdata_match=match_gedi_to_landcover(gedi_filtered_file,landcover_tif)
+
+    #多个TIF匹配
+    landcover_tif_list=[r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N25.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N30.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N35.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N40.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W115N25.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W120N35.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W120N40.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W125N35.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W125N40.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W115N30.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W115N35.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W115N40.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W120N30.tif"
+
+    ]
+    output_file = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_Matched_MultiTIF_SF.h5"
+    GEDIdata_match=match_gedi_to_landcover_multi(gedi_filtered_file,landcover_tif_list,output_file)
+
     print(f"\n[2/2] 正在保存精简版数据到: {output_file}")
     try:
         saved_path=save_matched_data(
             GEDIdata_match,
-            output_file,
-            landcover_tif)
+            output_file)
         print("保存成功")
     except Exception as e:
         print(f"保存失败：{e}")
         import traceback
         traceback.print_exc()
-
