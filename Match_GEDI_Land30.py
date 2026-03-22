@@ -10,7 +10,9 @@ from rasterio.warp import transform as warp_transform
 from typing import Dict, Any, Optional
 import Load_filtered_data
 from typing import  List
+from rasterio.warp import transform
 from FeatureExtract import extract_waveform_features
+from Save_Match_Data import save_matched_data
 
 
 def match_gedi_to_landcover(gedi_filtered_file: str, landcover_tif: str, output_file: Optional[str] = None):
@@ -220,15 +222,23 @@ def match_gedi_to_landcover_multi(gedi_filtered_file: str, landcover_tif_list: L
         total_points += n_points
         channel = beam_data.get('channel', beam_idx)
         print(f"处理波束 BEAM{channel} ({n_points} 个点)")
-        lons=np.array(beam_data['fpdata']['ins_lon'], dtype=np.float64)
-        lats=np.array(beam_data['fpdata']['ins_lat'], dtype=np.float64)
+        lons=np.array(beam_data['fpdata']['lon_lowestmode'], dtype=np.float64)
+        lats=np.array(beam_data['fpdata']['lat_lowestmode'], dtype=np.float64)
 
+        xs_proj, ys_proj = transform(
+            src_crs="EPSG:4326",
+            dst_crs=lc_crs,
+            xs=lons,
+            ys=lats
+        )
+        xs_proj = np.array(xs_proj)
+        ys_proj = np.array(ys_proj)
 
-        xs, ys = lons, lats
+        # xs, ys = lons, lats
 
 
         #坐标行列号
-        rows_list, cols_list = rowcol(lc_transform, xs, ys)
+        rows_list, cols_list = rowcol(lc_transform, xs_proj,ys_proj)
         rows = np.array(rows_list, dtype=np.int32)
         cols = np.array(cols_list, dtype=np.int32)
 
@@ -268,5 +278,38 @@ def match_gedi_to_landcover_multi(gedi_filtered_file: str, landcover_tif_list: L
     return GEDIdata
 
 
+#----------------------------------主程序入口-----------------------------------------
+if __name__ == "__main__":
+    # GEDI_FILTERED_PATH = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_2025032182236_O34785_02_T02894_02_006_02_V002.h5"
+    gedi_filtered_file=r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
 
+    output_file = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_matched_GLC30.h5"
 
+    #多个TIF匹配
+    landcover_tif_list=[r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N25.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N30.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N35.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N40.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W115N25.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W120N35.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W120N40.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W125N35.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W125N40.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W115N30.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W115N35.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W115N40.tif",
+                        r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W120N30.tif"
+
+    ]
+    GEDIdata_match=match_gedi_to_landcover_multi(gedi_filtered_file,landcover_tif_list,output_file)
+
+    print(f"\n[2/2] 正在保存精简版数据到: {output_file}")
+    try:
+        saved_path=save_matched_data(
+            GEDIdata_match,
+            output_file)
+        print("保存成功")
+    except Exception as e:
+        print(f"保存失败：{e}")
+        import traceback
+        traceback.print_exc()

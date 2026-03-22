@@ -187,7 +187,7 @@ if __name__ == "__main__":
                         r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W120N30.tif"
 
     ]
-    output_file = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_Matched_MultiTIF_SF.h5"
+    output_file = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_Matched_Land30.h5"
     GEDIdata_match=match_gedi_to_landcover_multi(gedi_filtered_file,landcover_tif_list,output_file)
 
     print(f"\n[2/2] 正在保存精简版数据到: {output_file}")

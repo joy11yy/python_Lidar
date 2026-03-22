@@ -30,7 +30,7 @@ def save_filtered_gedi(GEDIdata, original_l1b_file):
     else:
         # 如果不是标准命名，就在末尾加_filtered
         name_parts = base_name.split('.')
-        output_name = name_parts[0] + '_filtered.' + name_parts[1]
+        output_name = name_parts[0] + '_filtered1.' + name_parts[1]
 
     # 输出到同一个目录
     output_file = os.path.join(os.path.dirname(original_l1b_file), output_name)
@@ -175,6 +175,8 @@ def load_filtered_gedi(filtered_file):
 
 # 修改主程序
 if __name__ == "__main__":
+    # gedi_l1b = r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
+    # gedi_l2a = r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2025009102237_O34423_03_T04153_02_004_02_V002.h5"
     gedi_l1b = r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
     gedi_l2a = r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2025009102237_O34423_03_T04153_02_004_02_V002.h5"
 
@@ -202,6 +204,3 @@ if __name__ == "__main__":
         print(f"\n总共有效点数: {total_valid}")
         print(f"\n筛选后的数据已保存到: {saved_file}")
 
-        # 测试加载保存的数据
-        print("\n" + "=" * 50)
-        print("测试加载保存的数据...")

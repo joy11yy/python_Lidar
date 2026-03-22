@@ -45,6 +45,8 @@ def ReadGEDI_L1B_L2A(GEDI_L1B_file, GEDI_L2A_file):
                     selected_algorithm = beam_group['selected_algorithm'][:]
                     degrade_flag = beam_group['degrade_flag'][:]
                     surface_flag = beam_group['surface_flag'][:]
+                    lat_lowestmode=beam_group['lat_lowestmode'][:]
+                    lon_lowestmode=beam_group['lon_lowestmode'][:]
 
                     print(f"  波束 {beam_name}: {len(shot_number)} 个shot")
                     print(f"    quality_flag 为0和1的数据: {np.bincount(quality_flag)}")
@@ -57,7 +59,9 @@ def ReadGEDI_L1B_L2A(GEDI_L1B_file, GEDI_L2A_file):
                             'sensitivity': sensitivity[i],
                             'selected_algorithm': selected_algorithm[i],
                             'degrade_flag': degrade_flag[i],
-                            'surface_flag': surface_flag[i]
+                            'surface_flag': surface_flag[i],
+                            'lat_lowestmode': lat_lowestmode[i],
+                            'lon_lowestmode': lon_lowestmode[i]
                         }
 
         # 统计总加载数
@@ -92,7 +96,9 @@ def ReadGEDI_L1B_L2A(GEDI_L1B_file, GEDI_L2A_file):
                 'selected_algorithm': [],
                 'degrade_flag': [],
                 'surface_flag': [],
-                'is_valid': []
+                'is_valid': [],
+                'lat_lowestmode': [],
+                'lon_lowestmode': []
             }
 
             # 进行质量筛选
@@ -114,6 +120,8 @@ def ReadGEDI_L1B_L2A(GEDI_L1B_file, GEDI_L2A_file):
                             valid_quality_info['degrade_flag'].append(q['degrade_flag'])
                             valid_quality_info['surface_flag'].append(q['surface_flag'])
                             valid_quality_info['is_valid'].append(True)
+                            valid_quality_info['lat_lowestmode'].append(q['lat_lowestmode'])
+                            valid_quality_info['lon_lowestmode'].append(q['lon_lowestmode'])
                             valid_count += 1
 
             print(f"  质量筛选: {valid_count}/{len(shot_number)} 个有效点")
@@ -170,6 +178,9 @@ def ReadGEDI_L1B_L2A(GEDI_L1B_file, GEDI_L2A_file):
                 lon_bin0 = f[f"{BEAM}/geolocation/longitude_bin0"][:].flatten()[valid_indices]
                 lon_lastbin = f[f"{BEAM}/geolocation/longitude_lastbin"][:].flatten()[valid_indices]
 
+
+
+
                 # 噪声数据
                 noise_mean = f[f"{BEAM}/noise_mean_corrected"][:].flatten()[valid_indices]
                 noise_std = f[f"{BEAM}/noise_stddev_corrected"][:].flatten()[valid_indices]
@@ -207,7 +218,10 @@ def ReadGEDI_L1B_L2A(GEDI_L1B_file, GEDI_L2A_file):
                     'lat_lastbin': lat_lastbin,
                     'lon_bin0': lon_bin0,
                     'lon_lastbin': lon_lastbin,
-                    'elev_EGM2008_corr': elev_EGM2008_corr
+                    'elev_EGM2008_corr': elev_EGM2008_corr,
+                    'lat_lowestmode': np.array(valid_quality_info['lat_lowestmode'], dtype=np.float64),
+                    'lon_lowestmode': np.array(valid_quality_info['lon_lowestmode'], dtype=np.float64)
+
                 }
 
                 GEDIdata[beam_idx]['noisedata'] = {
@@ -231,9 +245,14 @@ def ReadGEDI_L1B_L2A(GEDI_L1B_file, GEDI_L2A_file):
 
 # 使用示例
 if __name__ == "__main__":
-    gedi_l1b = r"D:\研究生\SanFrancisco\GEDI01_B_2025032182236_O34785_02_T02894_02_006_02_V002.h5"
-    gedi_l2a = r"D:\研究生\SanFrancisco\GEDI02_A_2025032182236_O34785_02_T02894_02_004_02_V002.h5"
+    # gedi_l1b = r"D:\研究生\SanFrancisco\GEDI01_B_2025032182236_O34785_02_T02894_02_006_02_V002.h5"
+    # gedi_l2a = r"D:\研究生\SanFrancisco\GEDI02_A_2025032182236_O34785_02_T02894_02_004_02_V002.h5"
 
+    gedi_l1b = r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
+    gedi_l2a = r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2025009102237_O34423_03_T04153_02_004_02_V002.h5"
+
+    # gedi_l1b=r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2024360161006_O34194_03_T07611_02_006_02_V002_subsetted.h5"
+    # gedi_l2a=r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2024360161006_O34194_03_T07611_02_004_02_V002_subsetted.h5"
     # 读取带质量筛选的数据
     GEDIdata = ReadGEDI_L1B_L2A(gedi_l1b, gedi_l2a)
 

@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 
-def save_matched_data(GEDIdata, output_file, landcover_source=None):
+def save_matched_data(GEDIdata, output_file):
     """
     保存【匹配后且已剔除无效点】的 GEDI 数据。
 
@@ -17,7 +17,6 @@ def save_matched_data(GEDIdata, output_file, landcover_source=None):
     参数:
     GEDIdata: 包含 'cover_type' 字段的字典 (其中 -1 代表无效)
     output_file: 输出文件路径
-    landcover_source: (可选) 记录使用的 TIF 文件名
     """
     print(f"\n 正在保存匹配数据到: {output_file}")
     print("   (仅保留 cover_type != -1 的有效点)")
@@ -30,8 +29,8 @@ def save_matched_data(GEDIdata, output_file, landcover_source=None):
         f.attrs['creation_date'] = datetime.now().isoformat()
         f.attrs['processing_type'] = 'Filtered_Matched_Compact'  # 标记为精简版
         f.attrs['description'] = 'Only shots with valid land cover codes are saved.'
-        if landcover_source:
-            f.attrs['landcover_source'] = landcover_source
+        # if landcover_source:
+        #     f.attrs['landcover_source'] = landcover_source
 
         # 遍历每个波束进行筛选和保存
         for beam_idx, beam_data in GEDIdata.items():

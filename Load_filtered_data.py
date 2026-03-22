@@ -69,14 +69,16 @@ def load_filtered_gedi_data(filtered_file):
                     fp_group=beam_group['fpdata']
                     first_lon = fp_group['ins_lon'][0]
                     first_lat = fp_group['ins_lat'][0]
+                    lat_lowestmode=fp_group['lat_lowestmode'][0]
+                    lon_lowestmode=fp_group['lon_lowestmode'][0]
 
                     # 简单的合理性检查
                     # 旧金山经度应该在 -123 左右，纬度在 37 左右
                     is_suspicious = False
-                    if -90 < first_lon < 90 and (first_lat < -90 or first_lat > 90):
+                    if -90 < lon_lowestmode < 90 and (lat_lowestmode < -90 or lat_lowestmode > 90):
                         print(f"   ⚠️ [警告] 波束 {beam_name} 数据疑似经纬度颠倒！")
-                        print(f"      读取到的 ins_lon[0] = {first_lon} (看起来像纬度)")
-                        print(f"      读取到的 ins_lat[0] = {first_lat} (看起来像经度)")
+                        print(f"      读取到的 lon[0] = {lon_lowestmode} (看起来像纬度)")
+                        print(f"      读取到的 lat[0] = {lat_lowestmode} (看起来像经度)")
                         is_suspicious = True
 
                     if not is_suspicious:
