@@ -248,11 +248,10 @@ if __name__ == "__main__":
     # gedi_l1b = r"D:\研究生\SanFrancisco\GEDI01_B_2025032182236_O34785_02_T02894_02_006_02_V002.h5"
     # gedi_l2a = r"D:\研究生\SanFrancisco\GEDI02_A_2025032182236_O34785_02_T02894_02_004_02_V002.h5"
 
-    gedi_l1b = r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
-    gedi_l2a = r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2025009102237_O34423_03_T04153_02_004_02_V002.h5"
-
-    # gedi_l1b=r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2024360161006_O34194_03_T07611_02_006_02_V002_subsetted.h5"
-    # gedi_l2a=r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2024360161006_O34194_03_T07611_02_004_02_V002_subsetted.h5"
+    # gedi_l1b = r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
+    # gedi_l2a = r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2025009102237_O34423_03_T04153_02_004_02_V002.h5"
+    gedi_l1b=r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2024361091112_O34205_02_T00048_02_006_02_V002.h5"
+    gedi_l2a=r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2024361091112_O34205_02_T00048_02_004_02_V002.h5"
     # 读取带质量筛选的数据
     GEDIdata = ReadGEDI_L1B_L2A(gedi_l1b, gedi_l2a)
 
