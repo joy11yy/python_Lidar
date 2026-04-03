@@ -58,7 +58,7 @@ def match_gedi_to_landcover(gedi_filtered_file: str, landcover_tif: str, output_
         lc_data = src.read(1)
 
     print("\n[2/3] 执行空间匹配...")
-    total_matched = 0
+    total_matched = 0k
     total_points = 0
 
     for beam_idx, beam_data in GEDIdata.items():

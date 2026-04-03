@@ -26,7 +26,7 @@ def save_filtered_gedi(GEDIdata, original_l1b_file):
     base_name = os.path.basename(original_l1b_file)
     # 将GEDI01_B替换为GEDI_filtered，或者直接在原名上加_filtered
     if base_name.startswith('GEDI01_B'):
-        output_name = base_name.replace('GEDI01_B', 'GEDI_filtered_s0.5')
+        output_name = base_name.replace('GEDI01_B', 'GEDI_filtered')
     else:
         # 如果不是标准命名，就在末尾加_filtered
         name_parts = base_name.split('.')
@@ -177,10 +177,9 @@ def load_filtered_gedi(filtered_file):
 if __name__ == "__main__":
     # gedi_l1b = r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
     # gedi_l2a = r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2025009102237_O34423_03_T04153_02_004_02_V002.h5"
-    # gedi_l1b = r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
-    # gedi_l2a = r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2025009102237_O34423_03_T04153_02_004_02_V002.h5"
-    gedi_l1b = r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2024361091112_O34205_02_T00048_02_006_02_V002.h5"
-    gedi_l2a = r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2024361091112_O34205_02_T00048_02_004_02_V002.h5"
+    gedi_l1b = r"D:\研究生\SanFrancisco\GEDIdata\GEDI01_B_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
+    gedi_l2a = r"D:\研究生\SanFrancisco\GEDIdata\GEDI02_A_2025009102237_O34423_03_T04153_02_004_02_V002.h5"
+
     # 读取带质量筛选的数据
     GEDIdata = ReadGEDI_L1B_L2A(gedi_l1b, gedi_l2a)
 
