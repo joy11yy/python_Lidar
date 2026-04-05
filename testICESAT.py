@@ -2,7 +2,7 @@ import h5py
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from sklearn.cluster import DBSCAN
 
 def load_ATL03_data(filepath, beam='/gt2r'):
     """
@@ -114,54 +114,37 @@ def explore_all_beams(filepath):
         print("=" * 60)
         return beam_stats
 
-
-def denoise_by_local_density(df, segment_length=100, radius_dist=25, radius_h=2, density_percentile=40):
+def denoise_by_dbscan(df, segment_length=100, eps_dist=25, eps_h=2, min_samples=5):
     """
     基于局部密度的去噪算法（修复版）
     """
+
+    print(f"  [DBSCAN] 输入光子数: {len(df)}")
     df = df.copy()
     df['segment'] = (df['dist'] // segment_length).astype(int)
     df['is_signal'] = False
 
     for seg_id in df['segment'].unique():
         seg_mask = df['segment'] == seg_id
-        seg_h = df.loc[seg_mask, 'h'].values
-        seg_dist = df.loc[seg_mask, 'dist'].values
-        seg_idx = np.where(seg_mask)[0]
+        seg_data = df.loc[seg_mask, ['dist', 'h']].values
 
-        if len(seg_h) < 10:
+        if len(seg_data) < min_samples:
             continue
 
-        # 高程直方图粗去噪
-        mu = np.mean(seg_h)
-        sigma = np.std(seg_h)
-        coarse_mask = (seg_h >= mu - 2 * sigma) & (seg_h <= mu + 2 * sigma)
+        # 归一化（让dist和h在同一个尺度下）
+        X = np.column_stack([
+            seg_data[:, 0] / eps_dist,
+            seg_data[:, 1] / eps_h
+        ])
 
-        if coarse_mask.sum() < 5:
-            continue
+        # 一行调用DBSCAN——这就是算法工程师的做法
+        clustering = DBSCAN(eps=1.0, min_samples=min_samples, metric='euclidean')
+        labels = clustering.fit_predict(X)
 
-        seg_h_filtered = seg_h[coarse_mask]
-        seg_dist_filtered = seg_dist[coarse_mask]
-        seg_idx_filtered = seg_idx[coarse_mask]
-
-        # 计算每个光子的局部密度
-        densities = []
-        for i in range(len(seg_h_filtered)):
-            # 计算与其他光子的距离
-            dist_diff = np.abs(seg_dist_filtered - seg_dist_filtered[i])
-            h_diff = np.abs(seg_h_filtered - seg_h_filtered[i])
-            neighbors = (dist_diff <= radius_dist) & (h_diff <= radius_h)
-            densities.append(np.sum(neighbors))
-
-        densities = np.array(densities)
-
-        # 密度阈值
-        if len(densities) > 0:
-            density_threshold = np.percentile(densities, density_percentile)
-            fine_mask = densities >= density_threshold
-
-            signal_idx = seg_idx_filtered[fine_mask]
-            df.loc[signal_idx, 'is_signal'] = True
+        # 标记信号光子（-1是噪声）
+        signal_mask = labels != -1
+        seg_indices = np.where(seg_mask)[0][signal_mask]
+        df.loc[seg_indices, 'is_signal'] = True
 
     return df
 
@@ -315,7 +298,7 @@ def plot_results(df, beam_name):
 
 
 def main():
-    filepath = r"D:\研究生\ICESAT\ATL03_20251110081832_08672906_007_01_subsetted.h5"
+    filepath = r"D:\研究生\SanFrancisco\ICESAT\ATL03_20251110081832_08672906_007_01_subsetted.h5"
 
     print("步骤1: 探索所有波束")
     beam_stats = explore_all_beams(filepath)
@@ -336,7 +319,7 @@ def main():
     df, beam_name = load_ATL03_data(filepath, beam=best_beam)
 
     print("\n步骤3: 局部密度去噪")
-    df = denoise_by_local_density(df, segment_length=100, radius_dist=25, radius_h=2, density_percentile=40)
+    df = denoise_by_dbscan(df, segment_length=100, eps_dist=25, eps_h=2, min_samples=5)
     signal_cnt = df['is_signal'].sum()
     print(f"  信号光子: {signal_cnt} / {len(df)} ({100 * signal_cnt / len(df):.1f}%)")
 
