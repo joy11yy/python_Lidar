@@ -3,7 +3,7 @@ import numpy as np
 import os
 from waveform_read import waveform_read
 from datetime import datetime
-from ReadData_AB import ReadGEDI_L1B_L2A
+from ReadData_L1B_L2A import ReadGEDI_L1B_L2A
 
 
 def save_filtered_gedi(GEDIdata, original_l1b_file):

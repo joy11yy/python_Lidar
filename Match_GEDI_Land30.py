@@ -286,6 +286,8 @@ if __name__ == "__main__":
     output_file = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_matched_GLC30.h5"
 
     #多个TIF匹配
+
+
     landcover_tif_list=[r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N25.tif",
                         r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N30.tif",
                         r"D:\研究生\SanFrancisco\SanTIF\GLC_FCS30_2020_W110N35.tif",

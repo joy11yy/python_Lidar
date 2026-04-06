@@ -37,7 +37,10 @@ def ReadGEDI_L1B_L2A(GEDI_L1B_file, GEDI_L2A_file):
 
                     # 获取该波束的数据（直接从根目录读取）
                     beam_group = f2[beam_name]
-
+                    # 跳过没有 shot_number 的波束（覆盖波束没有质量数据）
+                    if 'shot_number' not in beam_group:
+                        print(f"  波束 {beam_name}: 无质量数据（覆盖波束），跳过")
+                        continue
                     # 读取shot_number和质量标志（都在根目录下）
                     shot_number = beam_group['shot_number'][:]
                     quality_flag = beam_group['quality_flag'][:]  # 注意：这里是 quality_flag 不是 quality_flag_a1
@@ -83,6 +86,9 @@ def ReadGEDI_L1B_L2A(GEDI_L1B_file, GEDI_L2A_file):
             # 检查波束是否存在
             if BEAM not in f:
                 print(f"  波束{BEAM2}不存在，跳过")
+                continue
+            if f"{BEAM}/shot_number" not in f:
+                print(f"  波束{BEAM2}没有shot_number（subsetted文件已过滤），跳过")
                 continue
 
             # 获取该波束的shot_number
