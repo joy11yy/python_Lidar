@@ -10,7 +10,7 @@ import os
 from Load_filtered_data import load_filtered_gedi_data
 from Save_Match_Data import save_matched_data
 from rasterio.warp import transform
-
+import datetime
 """"
 rasterio 是处理TIF地理空间栅格数据，GEDI给的是经纬度lat/lon TIF存储的是行列号或者像素矩阵，rasterio
 会读取TIF文件头里面的transfrom变换参数和crs坐标系，提供sample()或rowcol()函数，传入经纬度九年得到图片数值
@@ -105,13 +105,16 @@ def match_gedi_ncld(gedi_filtered_file,lc_path):
 
 #----------------------------------主程序入口-----------------------------------------
 if __name__ == "__main__":
-    NCLD_tif_path = r"D:\研究生\SanFrancisco\NCLD\Annual_NLCD_LndCov_2024_CU_C1V1_de325bd4-e7ec-4ccb-81ba-fddd2e8a3af3.tiff"
+    NCLD_tif_path = r"D:\研究生\SanFrancisco\NCLD\NLCD_2024_SanFrancisco.tif"
     # GEDI_FILTERED_PATH = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_2025032182236_O34785_02_T02894_02_006_02_V002.h5"
     #GEDI_FILTERED_PATH =r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_2024361091112_O34205_02_T00048_02_006_02_V002.h5"
-    GEDI_FILTERED_PATH =r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_s0.5_2024361091112_O34205_02_T00048_02_006_02_V002.h5"
+    #GEDI_FILTERED_PATH =r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_s0.5_2024361091112_O34205_02_T00048_02_006_02_V002.h5"
     # GEDI_FILTERED_PATH = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_1_2025032182236_O34785_02_T02894_02_006_02_V002.h5"
-    OUTPUT_H5_PATH = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_matched_NLCD_4205_2024.h5"
-
+    GEDI_FILTERED_PATH = r"D:\研究生\SanFrancisco\GEDIdata\merged_gedi_data_20260411.h5"
+    #OUTPUT_H5_PATH = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_matched_NLCD_4205_2024.h5"
+    #获取当前日期
+    current_date=datetime.datetime.now().strftime("%Y%m%d")
+    OUTPUT_H5_PATH=rf"D:\研究生\SanFrancisco\GEDIdata\GEDI_matched_NLCD_{current_date}.h5"
     matched_data=match_gedi_ncld(GEDI_FILTERED_PATH,NCLD_tif_path)
     if matched_data is not None:
         save_matched_data(matched_data,OUTPUT_H5_PATH)

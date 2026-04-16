@@ -1,5 +1,10 @@
-import datetime
+""""
+本文件包含了合并多个文件数据的函数MergedGEDIdata
+将合并后的数据保存为新的h5文件
 
+"""
+
+import datetime
 import ReadData_L1B_L2A
 import os
 import numpy as np
@@ -171,3 +176,9 @@ if __name__ == "__main__":
         print("\n=== 合并完成 ===")
         for beam_idx, beam_data in merged_data.items():
             print(f"波束 {beam_data['channel']}: {beam_data['pointnum']} 个有效点")
+    # 动态生成带时间戳的文件名,文件保存名字为年月日
+    from datetime import datetime
+
+    output_filename = f"merged_gedi_data_{datetime.now().strftime('%Y%m%d')}.h5"
+    output_path = os.path.join(r"D:\研究生\SanFrancisco\GEDIdata", output_filename)
+    save_merged_data(merged_data, output_path)

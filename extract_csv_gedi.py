@@ -7,7 +7,7 @@ import numpy as np
 # 这里填入你刚才生成的 filtered 文件路径
 # 根据你之前的代码，它应该在同目录下，文件名类似 GEDI_filtered_...h5
 # filtered_file_path = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_2025009102237_O34423_03_T04153_02_006_02_V002.h5"
-filtered_file_path = r"D:\研究生\SanFrancisco\GEDIdata\GEDI_filtered_2024361091112_O34205_02_T00048_02_006_02_V002.h5"
+filtered_file_path = r"D:\研究生\SanFrancisco\GEDIdata\merged_gedi_data_20260411.h5"
     #GEDI_FILTERED_PATH = r
 
 # 如果上面的文件不存在，尝试使用原始的 L2A 文件路径作为备选
